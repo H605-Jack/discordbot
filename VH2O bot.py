@@ -2,7 +2,7 @@ import discord
 import time
 import asyncio
 import random
-from discord.ext import commands, tasks
+from discord.ext import commands
 from itertools import cycle
 
 messages = joined = 0
@@ -12,16 +12,11 @@ status = cycle(['Status', 'On Air'])
 
 @client.event
 async def on_ready():
-    change_status.start()
     print('logged in as')
     print(client.user.name)
     print(client.user.id)
     print('-----')
 
-
-@tasks.loop(seconds=3)
-async def change_status():
-    await client.change_presence(activity=discord.Game(next(status)))
 
 #####################
 #   I. Main Commands
@@ -64,6 +59,22 @@ async def update_stats():
             await asyncio.sleep(200)
 
 
+async def record_usage(ctx):
+    print(ctx.author, 'used', ctx.command, 'at', ctx.message.created_at)
+
+
+@client.command()
+@commands.before_invoke(record_usage)
+async def who(ctx):  # Output: <User> used who at <Time>
+    await ctx.send('i am a bot')
+
+
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def test(ctx):
+    await ctx.send('You can manage messages.')
+
+
 @client.event
 async def on_message(message):
     global messages
@@ -82,8 +93,32 @@ async def on_message(message):
         await message.channel.send("⚠️WARNING!! NO SWEARING! FOLLOW THE RULES!")
     if message.content.find('bitch') != -1:
         await message.channel.send("⚠️WARNING!! NO SWEARING! FOLLOW THE RULES!")
-    if message.content.find('tickle the bot') != -1:
-        await message.channel.send("ây dà! :)) thôi anh ôi :33")
+    if message.content.find('cock') != -1:
+        await message.channel.send("Hey! That word is not allowed here! ⛔️")
+    if message.content.find('c0ck') != -1:
+        await message.channel.send("⚠️ B O N K !! Stop swearing!")
+    if message.content.find('sex') != -1:
+            await message.channel.send("Hey, friend! That NSFW word is not allowed here! ⛔️")
+    if message.content.find('pussy') != -1:
+        await message.channel.send("Hey, friend! That word is not allowed here! ⛔")
+    if message.content.find('cum') != -1:
+            await message.channel.send("Hey! That word is not allowed here! ⛔")
+    if message.content.find('FUCK') != -1:
+        await message.channel.send("⚠️WARNING!! NO SWEARING! FOLLOW THE RULES!")
+    if message.content.find('SHIT') != -1:
+        await message.channel.send("⚠️WARNING!! NO SWEARING! FOLLOW THE RULES!")
+    if message.content.find('BITCH') != -1:
+        await message.channel.send("⚠️WARNING!! NO SWEARING! FOLLOW THE RULES!")
+    if message.content.find('COCK') != -1:
+        await message.channel.send("Hey! That word is not allowed here! ⛔️")
+    if message.content.find('C0CK') != -1:
+        await message.channel.send("⚠️ B O N K !! Stop swearing!")
+    if message.content.find('SEX') != -1:
+            await message.channel.send("Hey, friend! That NSFW word is not allowed here! ⛔️")
+    if message.content.find('PUSSY') != -1:
+        await message.channel.send("Hey, friend! That word is not allowed here! ⛔")
+    if message.content.find('CUM') != -1:
+            await message.channel.send("Hey! That word is not allowed here! ⛔")
     elif message.content == "_users":
         await message.channel.send(f"""# of Members: {id.member_count}""")
     else:
@@ -93,6 +128,11 @@ async def on_message(message):
 
 
 client.loop.create_task(update_stats())
+
+
+@client.command()
+async def ping(ctx):
+    await ctx.send(f'Well, here it is! {round(client.latency * 1000)}')
 
 
 @client.command(aliases=['heyVH2O'])
